@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Vipul Kumar | 25AIMA61</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --border: #1e1e2e;
+      --accent: #7c3aed;
+      --accent2: #06b6d4;
+      --text: #e2e8f0;
+      --muted: #64748b;
+      --mono: 'DM Mono', monospace;
+      --display: 'Syne', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--display);
+      overflow-x: hidden;
+    }
+
+    /* NOISE TEXTURE */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 999;
+      opacity: 0.4;
+    }
+
+    /* HEADER */
+    header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      padding: 1.2rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      color: var(--text);
+    }
+    .logo span { color: var(--accent); }
+
+    nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      margin-left: 2rem;
+      transition: color 0.2s;
+      letter-spacing: 0.05em;
+    }
+    nav a:hover { color: var(--accent2); }
+
+    /* HERO */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 0 3rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-glow {
+      position: absolute;
+      top: 20%;
+      left: -10%;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(124,58,237,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-glow2 {
+      position: absolute;
+      bottom: 10%;
+      right: -5%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(6,182,212,0.1) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .badge {
+      display: inline-block;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--accent2);
+      border: 1px solid var(--accent2);
+      padding: 0.3rem 0.8rem;
+      border-radius: 2px;
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.6s 0.2s forwards;
+    }
+
+    h1 {
+      font-size: clamp(3rem, 8vw, 7rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.04em;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.4s forwards;
+    }
+    h1 .line2 { color: var(--accent); display: block; }
+
+    .hero-sub {
+      font-family: var(--mono);
+      color: var(--muted);
+      font-size: 1rem;
+      margin-top: 1.5rem;
+      max-width: 500px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.6s forwards;
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2.5rem;
+      opacity: 0;
+      animation: fadeUp 0.8s 0.8s forwards;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.85rem 2rem;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      text-decoration: none;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.2s;
+      border: none;
+    }
+    .btn-primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    .btn-primary:hover { background: #6d28d9; transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .btn-outline:hover { border-color: var(--accent2); color: var(--accent2); transform: translateY(-2px); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* SECTIONS */
+    section { padding: 6rem 3rem; }
+    .section-label {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      color: var(--accent2);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    h2 {
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 3rem;
+    }
+
+    /* SKILLS */
+    #skills { background: var(--surface); }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+    .skill-chip {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      border-radius: 4px;
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      text-align: center;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .skill-chip:hover { border-color: var(--accent); transform: translateY(-3px); }
+
+    /* PROJECTS */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2rem;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .project-card:hover { border-color: var(--accent); transform: translateY(-4px); }
+    .project-card h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+    .project-card p { color: var(--muted); font-family: var(--mono); font-size: 0.82rem; line-height: 1.6; margin-bottom: 1rem; }
+    .tag {
+      display: inline-block;
+      background: rgba(124,58,237,0.15);
+      color: var(--accent);
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      padding: 0.2rem 0.6rem;
+      border-radius: 2px;
+      margin-right: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    /* CONTACT */
+    #contact { background: var(--surface); }
+    #contact-form {
+      max-width: 560px;
+    }
+    .form-group { margin-bottom: 1.2rem; }
+    .form-group label {
+      display: block;
+      font-family: var(--mono);
+      font-size: 0.78rem;
+      color: var(--muted);
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.05em;
+    }
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      font-family: var(--mono);
+      font-size: 0.9rem;
+      padding: 0.8rem 1rem;
+      border-radius: 4px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .form-group input:focus,
+    .form-group textarea:focus { border-color: var(--accent); }
+    .form-group textarea { min-height: 120px; resize: vertical; }
+
+    #form-msg {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      margin-top: 1rem;
+      min-height: 1.4rem;
+    }
+    .msg-ok  { color: #22c55e; }
+    .msg-err { color: #ef4444; }
+
+    /* FOOTER */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--muted);
+      border-top: 1px solid var(--border);
+    }
+
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+
+    @media (max-width: 600px) {
+      header { padding: 1rem 1.5rem; }
+      #hero, section { padding-left: 1.5rem; padding-right: 1.5rem; }
+      nav a { margin-left: 1rem; font-size: 0.72rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">VK<span>.</span></div>
+  <nav>
+    <a href="#skills">Skills</a>
+    <a href="#projects">Projects</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+  <span class="badge">Roll No. 25AIMA61 &nbsp;·&nbsp; AI & ML</span>
+  <h1>Vipul<br><span class="line2">Kumar</span></h1>
+  <p class="hero-sub">
+    // AI & ML student building intelligent systems,<br>
+    full-stack applications &amp; scalable backends.
+  </p>
+  <div class="hero-btns">
+    <a href="#projects" class="btn btn-primary">View Projects</a>
+    <a href="#contact" class="btn btn-outline">Get in Touch</a>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <p class="section-label">// capabilities</p>
+  <h2>Skills</h2>
+  <div class="skills-grid">
+    <div class="skill-chip">Python</div>
+    <div class="skill-chip">JavaScript</div>
+    <div class="skill-chip">Node.js</div>
+    <div class="skill-chip">React</div>
+    <div class="skill-chip">MongoDB</div>
+    <div class="skill-chip">Express.js</div>
+    <div class="skill-chip">Machine Learning</div>
+    <div class="skill-chip">HTML / CSS</div>
+    <div class="skill-chip">Git & GitHub</div>
+    <div class="skill-chip">REST APIs</div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <p class="section-label">// work</p>
+  <h2>Projects</h2>
+  <div class="projects-grid">
+    <div class="project-card">
+      <h3>Green Basket 🛒</h3>
+      <p>An e-commerce web app for fresh groceries. Built with JavaScript, featuring cart management and product listings.</p>
+      <span class="tag">JavaScript</span>
+      <span class="tag">HTML/CSS</span>
+    </div>
+    <div class="project-card">
+      <h3>Task Manager 📋</h3>
+      <p>A task management web app with create, update, and delete operations. Clean UI with local persistence.</p>
+      <span class="tag">HTML</span>
+      <span class="tag">CSS</span>
+      <span class="tag">JS</span>
+    </div>
+    <div class="project-card">
+      <h3>Portfolio Website 🚀</h3>
+      <p>This very site — a full-stack portfolio with Node.js backend, MongoDB contact form, hosted on Vercel.</p>
+      <span class="tag">Node.js</span>
+      <span class="tag">MongoDB</span>
+      <span class="tag">Vercel</span>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <p class="section-label">// connect</p>
+  <h2>Contact</h2>
+  <form id="contact-form" onsubmit="sendMessage(event)">
+    <div class="form-group">
+      <label>NAME</label>
+      <input type="text" id="c-name" placeholder="Your name" required />
+    </div>
+    <div class="form-group">
+      <label>EMAIL</label>
+      <input type="email" id="c-email" placeholder="you@example.com" required />
+    </div>
+    <div class="form-group">
+      <label>MESSAGE</label>
+      <textarea id="c-msg" placeholder="Say something..." required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Send Message →</button>
+    <p id="form-msg"></p>
+  </form>
+</section>
+
+<footer>
+  © 2026 Vipul Kumar · 25AIMA61 · Built with Node.js + MongoDB + Vercel
+</footer>
+
+<script>
+  async function sendMessage(e) {
+    e.preventDefault();
+    const btn = e.target.querySelector('button');
+    const msg = document.getElementById('form-msg');
+    btn.textContent = 'Sending...';
+    btn.disabled = true;
+    msg.textContent = '';
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name:    document.getElementById('c-name').value,
+          email:   document.getElementById('c-email').value,
+          message: document.getElementById('c-msg').value
+        })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        msg.textContent = '✓ Message sent! I\'ll get back to you soon.';
+        msg.className = 'msg-ok';
+        e.target.reset();
+      } else {
+        throw new Error(data.error || 'Failed');
+      }
+    } catch(err) {
+      msg.textContent = '✗ Error: ' + err.message;
+      msg.className = 'msg-err';
+    } finally {
+      btn.textContent = 'Send Message →';
+      btn.disabled = false;
+    }
+  }
+</script>
+</body>
+</html>
